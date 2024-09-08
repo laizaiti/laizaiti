@@ -1,16 +1,35 @@
 ## Hi there 👋
 
-<!--
-**laizaiti/laizaiti** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+# 👋 欢迎来到我的GitHub小天地！ 🌟  
+  
+## 👨‍🎓 个人简介  
+  
+嘿，我是来再提·叶鲁别克，一个充满好奇心的大三大数据专业学生！🎓 在福州大学的计算机科学海洋里遨游，我不断探索着编程的奥秘，从算法的迷宫到软件的城堡，每一步都充满了挑战与乐趣。🌈  
+  
+## 💻 专业技能  
+  
+- **编程语言**：掌握Java、Python（熟悉Flask框架）、以及C语言。💡  
+- **算法与数据结构**：深入理解常见的数据结构（如链表、树、图）和算法（如排序、搜索、动态规划）。🧩  
+- **软技能**：沟通无界限，自学小能手，新技能get√！💪  
 
-Here are some ideas to get you started:
+  
+## 🎓 教育背景  
+  
+- **福州大学**，数据科学与大数据技术专业，大三在读。  
+  - 主修课程：软件工程、大数据计算、数据库系统原理...每一门课都是知识的宝藏。  
+  - 选修课程：人工智能、机器学习...我贪婪地吸收着这些前沿领域的养分。  
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## 🚀 未来规划  
+  
+展望未来，我满怀憧憬地规划着自己的技术之旅：  
+  
+- **深化专业知识**：继续深入学习计算机科学的核心课程，争取在毕业前掌握更多前沿技术。    
+- **职业规划**：毕业后，我希望能加入一家富有创新精神和技术实力的科技公司，从事人工智能或软件开发相关的工作。
+  
+## 💌 联系方式  
+  
+- 邮箱：2074199621@qq.com  
+- GitHub：https://github.com/laizaiti
+  
+  
+在学习的道路上，我始终保持着一颗年轻的心，对未知充满好奇，对挑战充满期待。希望在这个GitHub小天地里，我们能一起成长，共同探索技术的无限可能！🚀
