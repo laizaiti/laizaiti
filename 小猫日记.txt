@@ -1,0 +1,372 @@
+import pygame
+import random
+
+# 初始化 Pygame
+pygame.init()
+
+# 定义颜色
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)  # 鲜艳的黄色
+
+# 设置屏幕大小
+screen_width = 800
+screen_height = 600
+screen = pygame.display.set_mode((screen_width, screen_height))
+
+# 游戏时钟
+clock = pygame.time.Clock()
+
+# 存储选中的图片
+selected_images = []
+
+# 设置倒计时时间（以毫秒为单位）
+countdown_easy = 60000  # 简单模式 60 秒
+countdown_hard = 90000  # 困难模式 90 秒
+
+# 加载图案
+cat_images = []
+image_paths = [r'D:\lzt\1.png', r'D:\lzt\2.png', r'D:\lzt\3.png', r'D:\lzt\4.png', r'D:\lzt\7.png', r'D:\lzt\9.png']
+for path in image_paths:
+    try:
+        image = pygame.image.load(path)
+        image = pygame.transform.scale(image, (50, 50))  # 调整图案大小
+        cat_images.append(image)
+    except pygame.error as e:
+        print(f"无法加载图片 {path}: {e}")
+
+# 加载封面背景、选项图片和游戏结束背景及选项图片
+cover_background_path = r'D:\lzt\xinbeijing1.jpg'
+try:
+    cover_background = pygame.image.load(cover_background_path)
+    cover_background = pygame.transform.scale(cover_background, (screen_width, screen_height))
+except pygame.error as e:
+    print(f"无法加载封面背景图片 {cover_background_path}: {e}")
+
+option1_image_path = r'D:\lzt\anniu1.jpg'
+try:
+    option1_image = pygame.image.load(option1_image_path)
+    option1_image = pygame.transform.scale(option1_image, (200, 100))
+except pygame.error as e:
+    print(f"无法加载选项 1 图片 {option1_image_path}: {e}")
+
+option2_image_path = r'D:\lzt\anniu2.jpg'
+try:
+    option2_image = pygame.image.load(option2_image_path)
+    option2_image = pygame.transform.scale(option2_image, (200, 100))
+except pygame.error as e:
+    print(f"无法加载选项 2 图片 {option2_image_path}: {e}")
+
+option3_image_path = r'D:\lzt\anniu3.jpg'
+try:
+    option3_image = pygame.image.load(option3_image_path)
+    option3_image = pygame.transform.scale(option3_image, (200, 100))
+except pygame.error as e:
+    print(f"无法加载选项 3 图片 {option3_image_path}: {e}")
+
+success_end_background_path = r'D:\lzt\xinbeijing2.jpg'
+try:
+    success_end_background = pygame.image.load(success_end_background_path)
+    success_end_background = pygame.transform.scale(success_end_background, (screen_width, screen_height))
+except pygame.error as e:
+    print(f"无法加载成功结束背景图片 {success_end_background_path}: {e}")
+
+failure_end_background_path = r'D:\lzt\xinbeijing3.jpg'
+try:
+    failure_end_background = pygame.image.load(failure_end_background_path)
+    failure_end_background = pygame.transform.scale(failure_end_background, (screen_width, screen_height))
+except pygame.error as e:
+    print(f"无法加载失败结束背景图片 {failure_end_background_path}: {e}")
+
+back_to_cover_option_path = r'D:\lzt\anniu5.jpg'
+try:
+    back_to_cover_option = pygame.image.load(back_to_cover_option_path)
+    back_to_cover_option = pygame.transform.scale(back_to_cover_option, (200, 100))
+except pygame.error as e:
+    print(f"无法加载返回封面选项图片 {back_to_cover_option_path}: {e}")
+
+replay_option_path = r'D:\lzt\anniu4.jpg'
+try:
+    replay_option = pygame.image.load(replay_option_path)
+    replay_option = pygame.transform.scale(replay_option, (200, 100))
+except pygame.error as e:
+    print(f"无法加载重新游戏选项图片 {replay_option_path}: {e}")
+
+quit_option_path = r'D:\lzt\anniu6.jpg'
+try:
+    quit_option = pygame.image.load(quit_option_path)
+    quit_option = pygame.transform.scale(quit_option, (200, 100))
+except pygame.error as e:
+    print(f"无法加载退出游戏选项图片 {quit_option_path}: {e}")
+
+new_background_path = r'D:\lzt\xinbeijing4.jpg'
+try:
+    new_background = pygame.image.load(new_background_path)
+    new_background = pygame.transform.scale(new_background, (screen_width, screen_height))
+except pygame.error as e:
+    print(f"无法加载新界面背景图片 {new_background_path}: {e}")
+
+return_to_cover_image_path = r'D:\lzt\anniu7.jpg'
+try:
+    return_to_cover_image = pygame.image.load(return_to_cover_image_path)
+    return_to_cover_image = pygame.transform.scale(return_to_cover_image, (150, 75))
+except pygame.error as e:
+    print(f"无法加载返回封面选项图片 {return_to_cover_image_path}: {e}")
+
+# 加载鼠标点击音效和消除音效
+click_sound_path = r'D:\lzt\dianji.wav'
+try:
+    click_sound = pygame.mixer.Sound(click_sound_path)
+except pygame.error as e:
+    print(f"无法加载鼠标点击音效 {click_sound_path}: {e}")
+
+eliminate_sound_path = r'D:\lzt\xiaochu.mp3'
+try:
+    eliminate_sound = pygame.mixer.Sound(eliminate_sound_path)
+except pygame.error as e:
+    print(f"无法加载消除音效 {eliminate_sound_path}: {e}")
+
+success_sound_path = r'D:\lzt\chenggong.mp3'
+try:
+    success_sound = pygame.mixer.Sound(success_sound_path)
+except pygame.error as e:
+    print(f"无法加载游戏成功特效音 {success_sound_path}: {e}")
+
+failure_sound_path_1 = r'D:\lzt\shibai 1.mp3'
+try:
+    failure_sound_1 = pygame.mixer.Sound(failure_sound_path_1)
+except pygame.error as e:
+    print(f"无法加载游戏过程失败特效音 {failure_sound_path_1}: {e}")
+
+failure_sound_path_2 = r'D:\lzt\shibai 2.mp3'
+try:
+    failure_sound_2 = pygame.mixer.Sound(failure_sound_path_2)
+except pygame.error as e:
+    print(f"无法加载游戏失败特效音 {failure_sound_path_2}: {e}")
+
+# 加载游戏背景音乐
+music_path = r'D:\lzt\youxibeijingyinyue.wav'
+try:
+    pygame.mixer.music.load(music_path)
+    pygame.mixer.music.play(-1)  # -1 表示循环播放
+except pygame.error as e:
+    print(f"无法加载游戏背景音乐 {music_path}: {e}")
+
+# 定义游戏变量
+grid_size_easy = 6  # 减少简单模式的尺寸
+grid_size_hard = 12  # 困难模式 12x12
+grid_easy = [[None] * grid_size_easy for _ in range(grid_size_easy)]
+grid_hard = [[None] * grid_size_hard for _ in range(grid_size_hard)]
+
+# 设置游戏标题
+pygame.display.set_caption('小猫日记')
+
+# 确保简单模式下图像数量是每一个选定图像的 3 的倍数
+num_images_easy = grid_size_easy * grid_size_easy
+while num_images_easy % len(cat_images)!= 0 or num_images_easy % 3!= 0:
+    num_images_easy -= 1
+
+# 随机生成无序且随机分布的图案，并确保可完全消除
+def generate_grid(grid, grid_size, mode):
+    num_images = num_images_easy if mode == 'easy' else (grid_size * grid_size) // 3 * 3
+    available_images = cat_images * (num_images // len(cat_images))
+    random.shuffle(available_images)
+    positions = [(random.randint(0, screen_width - 50), random.randint(0, screen_height - 50)) for _ in range(num_images)]
+    grid = []
+    for image, pos in zip(available_images, positions):
+        overlapping = False
+        for existing_image, existing_pos in grid:
+            rect = pygame.Rect(existing_pos, (50, 50))
+            if rect.collidepoint(pos):
+                overlapping = True
+                break
+        if not overlapping:
+            grid.append((image, pos))
+        else:
+            # 如果重叠，重新生成位置直到不重叠
+            while overlapping:
+                new_pos = (random.randint(0, screen_width - 50), random.randint(0, screen_height - 50))
+                overlapping = False
+                for existing_image, existing_pos in grid:
+                    rect = pygame.Rect(existing_pos, (50, 50))
+                    if rect.collidepoint(new_pos):
+                        overlapping = True
+                        break
+            grid.append((image, new_pos))
+    return grid
+
+# 绘制网格
+def draw_grid(grid, grid_size):
+    for image, pos in grid:
+        screen.blit(image, pos)
+
+# 显示封面和模式选择
+def show_cover():
+    screen.blit(cover_background, (0, 0))
+    screen.blit(option1_image, (screen_width // 4 - 100, screen_height // 2 - 50))
+    screen.blit(option2_image, (3 * screen_width // 4 - 100, screen_height // 2 - 50))
+    screen.blit(option3_image, (screen_width // 2 - 100, screen_height // 2 + 50))
+    pygame.display.flip()
+    waiting = True
+    mode = 'easy'  # 默认模式
+    while waiting:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if option1_image.get_rect(topleft=(screen_width // 4 - 100, screen_height // 2 - 50)).collidepoint(event.pos):
+                    mode = 'easy'
+                    waiting = False
+                elif option2_image.get_rect(topleft=(3 * screen_width // 4 - 100, screen_height // 2 - 50)).collidepoint(event.pos):
+                    mode = 'hard'
+                    waiting = False
+                elif option3_image.get_rect(topleft=(screen_width // 2 - 100, screen_height // 2 + 50)).collidepoint(event.pos):
+                    return 'new_page'
+    return mode
+
+# 事件处理，确保只能选择最上面的图片，并显示在下方
+def handle_events(grid, grid_size, mode):
+    global selected_images
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            click_sound.play()
+            mouse_x, mouse_y = event.pos
+            for i in range(len(grid)-1, -1, -1):
+                image, pos = grid[i]
+                rect = pygame.Rect(pos, (50, 50))
+                if rect.collidepoint(mouse_x, mouse_y):
+                    selected_images.append((image, pos))
+                    del grid[i]
+                    break
+            if len(selected_images) == 3:
+                if all(img[0] == selected_images[0][0] for img in selected_images):
+                    # 成功抵消，播放消除音效
+                    eliminate_sound.play()
+                    selected_images = []
+                else:
+                    # 未成功抵消，放回原位，播放失败音效
+                    failure_sound_1.play()
+                    for img, pos in selected_images:
+                        grid.append((img, pos))
+                    selected_images = []
+
+# 绘制选中的图片在下方
+def draw_selected_images(selected_images):
+    y_offset = screen_height - 50 * len(selected_images)
+    for image, _ in selected_images:
+        screen.blit(image, (10, y_offset))
+        y_offset += 50
+
+# 显示游戏结束画面
+def show_end_screen(result):
+    global screen
+    end_background = success_end_background if result else failure_end_background
+    sound_to_play = success_sound if result else failure_sound_2
+    sound_to_play.play()
+    while True:
+        screen.blit(end_background, (0, 0))
+        screen.blit(replay_option, (screen_width // 3 - 100, screen_height // 2 - 50))
+        screen.blit(back_to_cover_option, (2 * screen_width // 3 - 100, screen_height // 2 - 50))
+        screen.blit(quit_option, (screen_width // 2 - 100, screen_height // 2 + 50))
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if replay_option.get_rect(topleft=(screen_width // 3 - 100, screen_height // 2 - 50)).collidepoint(event.pos):
+                    return 'replay'
+                elif back_to_cover_option.get_rect(topleft=(2 * screen_width // 3 - 100, screen_height // 2 - 50)).collidepoint(event.pos):
+                    return 'cover'
+                elif quit_option.get_rect(topleft=(screen_width // 2 - 100, screen_height // 2 + 50)).collidepoint(event.pos):
+                    return 'quit'
+
+# 显示新页面
+def show_new_page():
+    while True:
+        screen.blit(new_background, (0, 0))
+        # 添加返回封面的选项在左下方
+        screen.blit(return_to_cover_image, (50, screen_height - 100))
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                if return_to_cover_image.get_rect(topleft=(50, screen_height - 100)).collidepoint(event.pos):
+                    return 'cover'
+
+# 主游戏循环
+def game_loop(mode):
+    global countdown_easy, countdown_hard
+    running = True
+    if mode == 'easy':
+        grid = generate_grid([], grid_size_easy, mode)
+        countdown = countdown_easy
+    else:
+        grid = generate_grid([], grid_size_hard, mode)
+        countdown = countdown_hard
+    start_time = pygame.time.get_ticks()  # 获取游戏开始时间
+    while running:
+        screen.fill(WHITE)
+        handle_events(grid, grid_size_easy if mode == 'easy' else grid_size_hard, mode)
+        draw_grid(grid, grid_size_easy if mode == 'easy' else grid_size_hard)
+        draw_selected_images(selected_images)
+
+        # 判断是否全部消除
+        if len(grid) == 0:
+            return True
+
+        # 更新倒计时
+        current_time = pygame.time.get_ticks()
+        elapsed_time = current_time - start_time
+        remaining_time = countdown - elapsed_time
+        if remaining_time <= 0:
+            return False
+
+        # 检查是否提前完成消除
+        if len(grid) == 0:
+            return True
+
+        # 显示倒计时
+        minutes, seconds = divmod(remaining_time // 1000, 60)  # 将毫秒转换为秒
+        display_time = f'{minutes:02d}:{seconds:02d}'
+        font = pygame.font.SysFont(None, 36)
+        text = font.render(display_time, True, RED)
+        screen.blit(text, (10, 10))
+
+        pygame.display.flip()
+        clock.tick(60)
+
+# 运行游戏
+while True:
+    mode = show_cover()
+    if mode == 'cover':
+        continue
+    elif mode == 'new_page':
+        show_new_page()
+    else:
+        while True:
+            result = game_loop(mode)
+            action = None
+            if result:
+                action = show_end_screen(True)
+            else:
+                action = show_end_screen(False)
+            if action == 'cover':
+                break
+            elif action == 'replay':
+                # 重新开始当前模式的游戏
+                mode = mode
+                continue
+            else:
+                pygame.quit()
+                quit()
